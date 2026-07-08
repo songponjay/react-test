@@ -28,11 +28,41 @@ function App() {
       setCars(prevCars => [newCar, ...prevCars])
     }
 
+    const handleDelete = async (id) => {
+      if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรถคันนี้?')) return
+      try {
+        const res = await fetch(`http://localhost:3001/api/cars/${id}`, {
+          method: 'DELETE',
+        })
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        setCars(prev => prev.filter(car => car.id !== id))
+      } catch (err) {
+        alert('ลบไม่สำเร็จ: ' + err.message)
+      }
+    }
+
+    const handleUpdate = async (id, updatedData) => {
+      try {
+        const res = await fetch(`http://localhost:3001/api/cars/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(updatedData),
+        })
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const updated = await res.json()
+        setCars(prev => prev.map(car => car.id === id ? updated : car))
+      } catch (err) {
+        alert('แก้ไขไม่สำเร็จ: ' + err.message)
+      }
+    }
+
     return (
         <div style={{ padding: '2rem' }}>
             <h1>ระบบจัดการข้อมูลรถยนต์</h1>
             <CarForm onAdd={handleAdd} />
-            <CarList cars={cars} loading={loading} error={error} />
+            <CarList cars={cars} loading={loading} error={error} onDelete={handleDelete} onUpdate={handleUpdate} />
         </div>
     )
 }

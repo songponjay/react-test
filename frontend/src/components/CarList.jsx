@@ -1,6 +1,36 @@
-function CarList({ cars, loading, error }) {
+import {useState} from 'react'
+
+function CarList({ cars, loading, error, onDelete , onUpdate }) {
+    const [editingId, setEditingId] = useState(null)
+    const [editeData, setEditeData] = useState({})
+
     if (loading) return <p>กำลังโหลดข้อมูล...</p>
     if (error) return <p style={{ color: 'red' }}>เกิดข้อผิดพลาด: {error}</p>
+
+    const startEdit = (car) => {
+        setEditingId(car.id)
+        setEditeData({ 
+            registration: car.registration,
+            brand: car.brand,
+            model: car.model,
+            notes: car.notes,
+        })
+    }
+
+    const cancelEdit = () => {
+        setEditingId(null)
+        setEditeData({})
+    }
+
+    const saveEdit = async (id) => {
+        await onUpdate(id, editeData)
+        cancelEdit()
+    }
+
+    const updateField = (field, value) => {
+        setEditeData(prev => ({ ...prev, [field]: value }))
+    }
+
 
     return (
         <div>
@@ -12,17 +42,72 @@ function CarList({ cars, loading, error }) {
                         <th>ยี่ห้อ</th>
                         <th>รุ่น</th>
                         <th>หมายเหตุ</th>
+                        <th>จัดการ</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {cars.map((car) => (
-                        <tr key={car.id}>
+                    {cars.map((car) => {
+                        const isEditing = editingId === car.id
+                        return (
+                            <tr key={car.id}>
+                                <td>
+                                    {isEditing ? (
+                                        <input value={editeData.registration} 
+                                        onChange={(e) => updateField('registration', e.target.value)} />
+                                    ) : (
+                                        car.registration
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input value={editeData.brand} 
+                                        onChange={(e) => updateField('brand', e.target.value)} />
+                                    ) : (
+                                        car.brand
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input value={editeData.model} 
+                                        onChange={(e) => updateField('model', e.target.value)} />
+                                    ) : (
+                                        car.model
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <input value={editeData.notes}
+                                        onChange={(e) => updateField('notes', e.target.value)} />
+                                    ) : (
+                                        car.notes
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <>
+                                            <button onClick={() => saveEdit(car.id)}>บันทึก</button>
+                                            <button onClick={cancelEdit}>ยกเลิก</button>
+                                        </>
+                                    ) : (
+                                        <>  
+                                            <button onClick={() => startEdit(car)}>แก้ไข</button>
+                                            <button onClick={() => onDelete(car.id)}>ลบ</button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        )
+
+                     /*   <tr key={car.id}>
                             <td>{car.registration}</td>
                             <td>{car.brand}</td>
                             <td>{car.model}</td>
                             <td>{car.notes}</td>
-                        </tr>
-                    ))}
+                            <td>
+                                <button onClick={() => onDelete(car.id)}>ลบ</button>
+                            </td>
+                        </tr> */
+                    })}
                 </tbody>
             </table>
         </div>
