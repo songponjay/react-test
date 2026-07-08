@@ -1,9 +1,46 @@
-//import { useState } from 'react'
-//import reactLogo from './assets/react.svg'
-//import viteLogo from './assets/vite.svg'
-//import heroImg from './assets/hero.png'
+import { useState, useEffect } from 'react'
 import './App.css'
+import CarList from './components/CarList.jsx'
+import CarForm from './components/CarForm.jsx'
 
+function App() {
+    const [cars, setCars] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    
+    useEffect(() => {
+      fetch('http://localhost:3001/api/cars')
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`)
+          return res.json()
+        })
+        .then(data => {
+          setCars(data)
+          setLoading(false)
+        })
+        .catch(err => {
+          setError(err.message)
+          setLoading(false)
+        })
+    }, [])
+    
+    const handleAdd = (newCar) => {
+      setCars(prevCars => [newCar, ...prevCars])
+    }
+
+    return (
+        <div style={{ padding: '2rem' }}>
+            <h1>ระบบจัดการข้อมูลรถยนต์</h1>
+            <CarForm onAdd={handleAdd} />
+            <CarList cars={cars} loading={loading} error={error} />
+        </div>
+    )
+}
+
+export default App
+
+//---------------
+/*import './App.css'
 import CarList from './components/CarList.jsx'
 
 function App() {
@@ -16,10 +53,22 @@ function App() {
 }
 
 export default App
+*/
 
 
 
-{/*}
+//---------------
+//import { useState } from 'react'
+//import reactLogo from './assets/react.svg'
+//import viteLogo from './assets/vite.svg'
+//import heroImg from './assets/hero.png'
+//import './App.css'
+
+
+
+
+
+/*}
 function App() {
   const [count, setCount] = useState(0)
 
@@ -136,4 +185,4 @@ function App() {
 }
 
 export default App
-*/}
+*/
