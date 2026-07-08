@@ -1,9 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+//import { useState } from 'react'
+//import reactLogo from './assets/react.svg'
+//import viteLogo from './assets/vite.svg'
+//import heroImg from './assets/hero.png'
 import './App.css'
 
+import CarList from './components/CarList.jsx'
+
+function App() {
+  return (
+    <div style={{ padding: '2rem' }}>
+      <h1>ระบบจัดการข้อมูลรถยนต์</h1>
+      <CarList />
+    </div>
+  )
+}
+
+export default App
+
+
+
+{/*}
 function App() {
   const [count, setCount] = useState(0)
 
@@ -120,3 +136,4 @@ function App() {
 }
 
 export default App
+*/}
