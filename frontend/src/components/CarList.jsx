@@ -13,7 +13,9 @@ function CarList({ cars, loading, error, onDelete , onUpdate }) {
             registration: car.registration,
             brand: car.brand,
             model: car.model,
+            year: car.year,
             notes: car.notes,
+            status: car.status,
         })
     }
 
@@ -34,14 +36,16 @@ function CarList({ cars, loading, error, onDelete , onUpdate }) {
 
     return (
         <div>
-            <h2>รายการรถทั้งหมด ({cars.length} คัน)</h2>
-            <table border="1" cellPadding="8">
+            <h2 style={{textAlign: 'center'}}>รายการรถทั้งหมด ({cars.length} คัน)</h2>
+            <table border="1" cellPadding="8" style={{margin: '0 auto'}}>
                 <thead>
                     <tr>
                         <th>ทะเบียน</th>
                         <th>ยี่ห้อ</th>
                         <th>รุ่น</th>
+                        <th>ปีรถ</th>
                         <th>หมายเหตุ</th>
+                        <th>สถานะ</th>
                         <th>จัดการ</th>
                     </tr>
                 </thead>
@@ -76,6 +80,14 @@ function CarList({ cars, loading, error, onDelete , onUpdate }) {
                                 </td>
                                 <td>
                                     {isEditing ? (
+                                        <input value={editeData.year} 
+                                        onChange={(e) => updateField('year', e.target.value)} style={{ width: '80px' }} />
+                                    ) : (
+                                        car.year || '-'
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
                                         <input value={editeData.notes}
                                         onChange={(e) => updateField('notes', e.target.value)} />
                                     ) : (
@@ -93,6 +105,19 @@ function CarList({ cars, loading, error, onDelete , onUpdate }) {
                                             <button onClick={() => startEdit(car)}>แก้ไข</button>
                                             <button onClick={() => onDelete(car.id)}>ลบ</button>
                                         </>
+                                    )}
+                                </td>
+                                <td>
+                                    {isEditing ? (
+                                        <select value={editeData.status}
+                                        onChange={(e) => updateField('status', e.target.value)}
+                                        >
+                                            <option value="พร้อมใช้งาน">พร้อมใช้งาน</option>
+                                            <option value="ไม่พร้อมใช้งาน">ใช้งานอยู่</option>
+                                            <option value="ซ่อมบำรุง">ซ่อมบำรุง</option>
+                                        </select>
+                                    ) : (
+                                        car.status || '-'
                                     )}
                                 </td>
                             </tr>

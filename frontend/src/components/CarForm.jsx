@@ -5,6 +5,8 @@ function CarForm( {onAdd } ) {
     const [brand, setBrand] = useState('')
     const [model, setModel] = useState('')
     const [notes, setNotes] = useState('')
+    const [year, setYear] = useState('')
+    const [status, setStatus] = useState('พร้อมใช้งาน')
     const [submitting, setSubmitting] = useState(false)
 
     const handleSubmit = async (e) => {
@@ -16,7 +18,7 @@ function CarForm( {onAdd } ) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ registration, brand, model, notes }),
+                body: JSON.stringify({ registration, brand, model, year, notes, status }),
             })
             if (!res.ok) throw new Error(`HTTP ${res.status}`)
 
@@ -26,6 +28,8 @@ function CarForm( {onAdd } ) {
                 setBrand('')
                 setModel('')
                 setNotes('')
+                setYear('')
+                setStatus('พร้อมใช้งาน')
         } catch (err) {
             alert('เพิ่มไม่สำเร็จ: ' + err.message)
         } finally {
@@ -53,6 +57,20 @@ function CarForm( {onAdd } ) {
                 onChange={(e) => setModel(e.target.value)}
                 required
             />
+            <input
+                placeholder="ปีรถ (เช่น 2020)"
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                style={{ width: '100px' }}
+            />
+            <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}  
+            >
+                <option value="พร้อมใช้งาน">พร้อมใช้งาน</option>
+                <option value="ไม่พร้อมใช้งาน">ใช้งานอยู่</option>
+                <option value="ซ่อมบำรุง">ซ่อมบำรุง</option>
+            </select>
             <input
                 placeholder="หมายเหตุ"
                 value={notes}

@@ -11,7 +11,9 @@ db.exec(`
         registration TEXT NOT NULL, 
         brand TEXT NOT NULL, 
         model TEXT NOT NULL, 
+        year INTEGER,
         notes TEXT,
+        status TEXT DEFAULT 'พร้อมใช้งาน',
         created_at TEXT DEFAULT (datetime('now'))
     )
 `);

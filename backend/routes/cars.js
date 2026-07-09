@@ -8,29 +8,29 @@ const db = require('../database/database');
     });
 
     router.post('/', (req, res) => {
-    const { registration, brand, model, notes } = req.body;
+    const { registration, brand, model, year, notes,status } = req.body;
 
     if (!registration || !brand || !model) {
         return res.status(400).json({ error: 'ใส่ข้อมูลไม่ครบ' });
     }
 
-    const result = db.prepare('INSERT INTO cars (registration, brand, model, notes) VALUES (?, ?, ?, ?)')
-        .run(registration, brand, model, notes || '');
+    const result = db.prepare('INSERT INTO cars (registration, brand, model, year, notes ,status) VALUES (?, ?, ?, ?, ?, ?)')
+        .run(registration, brand, model, year || null, notes || '', status || 'พร้อมใช้งาน');
     const newCar = db.prepare('Select * from cars Where id = ?')
     .get(result.lastInsertRowid);
     res.status(201).json(newCar);
     });
     
     router.put('/:id', (req, res) => {
-        const {registration , brand, model, notes} = req.body;
+        const {registration , brand, model, year, notes,status} = req.body;
         const {id} = req.params;
         
         const car = db.prepare('SELECT * FROM cars WHERE id = ?').get(id);
         if (!car) 
             return res.status(404).json({ error: 'ไม่พบรถที่ต้องการแก้ไข' });
 
-            db.prepare('UPDATE cars SET registration = ?, brand = ?, model = ?, notes = ? WHERE id = ?')
-            .run(registration, brand, model, notes || '', id);
+            db.prepare('UPDATE cars SET registration = ?, brand = ?, model = ?, year = ?, notes = ?, status = ? WHERE id = ?')
+            .run(registration, brand, model, year || null, notes || '', status || 'พร้อมใช้งาน', id);
 
             const updated = db.prepare('Select * From cars Where id = ?')
             .get(id);
